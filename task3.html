@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task-3 Updated</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #f1f1f1;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #00ffff;
+    }
+
+    .tab-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .tab-buttons button {
+      padding: 10px 20px;
+      background: #00a6ff;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .tab-buttons button.active {
+      background: #0080ff;
+    }
+
+    .tab-content {
+      display: none;
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .question {
+      margin-bottom: 15px;
+    }
+
+    .answers label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    button.submit-btn {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #00a6ff;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .joke {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 22px;
+      }
+
+      .tab-buttons button {
+        font-size: 14px;
+        padding: 8px 15px;
+      }
+
+      .result, .joke {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Responsive Quiz + Joke Fetcher</h1>
+
+  <div class="tab-buttons">
+    <button class="tablink active" onclick="openTab('quiz')">Quiz</button>
+    <button class="tablink" onclick="openTab('joke')">Joke</button>
+  </div>
+
+  <div id="quiz" class="tab-content active">
+    <h2>Quick Quiz</h2>
+    <div class="question" id="questionContainer"></div>
+    <div class="answers" id="answersContainer"></div>
+    <button class="submit-btn" onclick="submitAnswer()">Submit</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div id="joke" class="tab-content">
+    <h2>Need a Laugh?</h2>
+    <button class="submit-btn" onclick="fetchJoke()">Get a Random Joke</button>
+    <div class="joke" id="jokeContainer"></div>
+  </div>
+
+  <script>
+    // Quiz Data
+    const quizData = [
+      {
+        question: "What does HTML stand for?",
+        answers: ["Hyper Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"],
+        correct: 0
+      },
+      {
+        question: "Which language is used for styling web pages?",
+        answers: ["HTML", "CSS", "JavaScript"],
+        correct: 1
+      },
+      {
+        question: "Which HTML tag is used to create a hyperlink on a web page?",
+        answers: ["&lt;link&gt;", "&lt;a&gt;", "&lt;href&gt;"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      document.getElementById('questionContainer').innerHTML = `<p>${q.question}</p>`;
+      const answersHTML = q.answers.map((ans, i) => `
+        <label>
+          <input type="radio" name="answer" value="${i}"> ${ans}
+        </label>`).join('');
+      document.getElementById('answersContainer').innerHTML = answersHTML;
+    }
+
+    function submitAnswer() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Please select an answer!");
+        return;
+      }
+
+      if (parseInt(selected.value) === quizData[currentQuestion].correct) {
+        score++;
+      }
+
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        document.getElementById('questionContainer').innerHTML = "";
+        document.getElementById('answersContainer').innerHTML = "";
+        document.getElementById('result').textContent = `You scored ${score} out of ${quizData.length}`;
+      }
+    }
+
+    function fetchJoke() {
+      fetch("https://official-joke-api.appspot.com/random_joke")
+        .then(response => response.json())
+        .then(data => {
+          const joke = `${data.setup} — ${data.punchline}`;
+          document.getElementById('jokeContainer').textContent = joke;
+        })
+        .catch(error => {
+          document.getElementById('jokeContainer').textContent = "Failed to fetch a joke.";
+          console.error("Error fetching joke:", error);
+        });
+    }
+
+    function openTab(tabName) {
+      const tabContents = document.querySelectorAll('.tab-content');
+      const tabLinks = document.querySelectorAll('.tablink');
+
+      tabContents.forEach(tc => tc.classList.remove('active'));
+      tabLinks.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // Load first question when page loads
+    loadQuestion();
+  </script>
+
+</body>
+</html>
