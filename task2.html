@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact & To-Do App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #00ffff, 0 0 30px #0099ff;
+    }
+
+    .section-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .container, .todo-container {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+        text-align:center;
+    color:white;
+    text-shadow: 0px 0px 20px rgb(235, 232, 135),0px -3px 5px white;
+    box-shadow: 0px 0px 10px blue;
+    padding: 10px;
+    margin: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00a6ff;
+      color: white;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .todo-container input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 70%;
+    }
+
+    .todo-container ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    .todo-container li {
+      background: #2a2a2a;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: #dc3545;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background: #c82333;
+    }
+    .suggestions {
+      margin-top: 10px;
+      display: none;
+      text-align: left;
+      background: #333;
+      border-radius: 5px;
+      max-height: 200px;
+      overflow-y: auto;
+      width: 70%;
+      position: absolute;
+      z-index: 10;
+    }
+
+    .suggestion-btn {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      background: #444;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+
+    .suggestion-btn:hover {
+      background: #666;
+    }
+
+    .suggestions.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TASK-2</h1>
+
+  <div class="section-wrapper">
+
+    <div class="container">
+      <h2>Contact Us</h2>
+      <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" required />
+
+        <label for="message">Message:</label>
+        <textarea id="message" rows="4" required></textarea>
+
+        <button type="submit">Send</button>
+        <p class="error" id="errorMsg"></p>
+      </form>
+    </div>
+
+
+    <div class="todo-container" style="position: relative;">
+      <h2>📝 To-Do List</h2>
+      <input type="text" id="taskInput" placeholder="Enter a new task" oninput="showSuggestions()" />
+      <button onclick="addTask()">Add</button>
+
+      <ul id="taskList">
+
+      </ul>
+
+
+      <div class="suggestions" id="suggestions">
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!name || !email || !message) {
+        errorMsg.textContent = "All fields are required.";
+        e.preventDefault();
+      } else if (!emailRegex.test(email)) {
+        errorMsg.textContent = "Please enter a valid email address.";
+        e.preventDefault();
+      } else {
+        errorMsg.textContent = "";
+        alert("Form submitted successfully!");
+      }
+    });
+
+
+    const taskSuggestions = [
+      "Task-2", 
+      "Task-1", 
+      "Read ", 
+      "Apex planet Internship", 
+      "Completed Successfully", 
+      "Organize workspace", 
+      "Reply to emails", 
+      "Plan next week"
+    ];
+
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const taskText = input.value.trim();
+      if (taskText === "") {
+        alert("Please enter a task.");
+        return;
+      }
+      createTask(taskText);
+      input.value = "";
+      hideSuggestions();  
+    }
+
+
+    function createTask(taskText) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${taskText}
+        <button class="delete-btn" onclick="deleteTask(this)">Delete</button>
+      `;
+      document.getElementById('taskList').appendChild(li);
+    }
+
+
+    function deleteTask(button) {
+      const li = button.parentElement;
+      li.remove();
+    }
+    function showSuggestions() {
+      const input = document.getElementById('taskInput').value.trim().toLowerCase();
+      const suggestions = document.getElementById('suggestions');
+
+
+      suggestions.innerHTML = "";
+
+      if (input === "") {
+        hideSuggestions();
+        return;
+      }
+
+      const filteredSuggestions = taskSuggestions.filter(task => task.toLowerCase().includes(input));
+
+
+      if (filteredSuggestions.length > 0) {
+        suggestions.classList.add('active');
+        filteredSuggestions.forEach(suggestion => {
+          const button = document.createElement('button');
+          button.textContent = suggestion;
+          button.classList.add('suggestion-btn');
+          button.onclick = () => addSuggestion(suggestion);
+          suggestions.appendChild(button);
+        });
+      } else {
+        hideSuggestions();
+      }
+    }
+
+
+    function addSuggestion(text) {
+      createTask(text);
+      document.getElementById('taskInput').value = "";
+      hideSuggestions();
+    }
+
+    function hideSuggestions() {
+      const suggestions = document.getElementById('suggestions');
+      suggestions.classList.remove('active');
+    }
+  </script>
+</body>
+</html>
