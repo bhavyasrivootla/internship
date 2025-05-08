@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dark Portfolio</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: #f5f5f5;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #111;
+      padding: 1.5em;
+      text-align: center;
+    }
+
+    header h1 {
+      margin-bottom: 0.5em;
+      color: #00ffe0;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin: 0 1em;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #00ffe0;
+    }
+
+    section {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #00ffe0;
+      margin-bottom: 1em;
+    }
+
+    /* Skills Section */
+    #skills {
+      background: #1a1a1a;
+      border-top: 2px solid #222;
+      border-bottom: 2px solid #222;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+    }
+
+    .skill-box {
+      background: #111;
+      border: 1px solid #00ffe0;
+      padding: 1em 1.5em;
+      border-radius: 10px;
+      color: #00ffe0;
+      font-weight: bold;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .skill-box:hover {
+      background: #00ffe0;
+      color: #111;
+      transform: scale(1.05);
+    }
+
+    .resume-btn {
+      display: inline-block;
+      margin-top: 2em;
+      background: #00ffe0;
+      color: #111;
+      padding: 0.75em 1.5em;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .resume-btn:hover {
+      background: #00c2aa;
+    }
+
+    /* Forms & Lists */
+    input, textarea, select, button {
+      width: 100%;
+      max-width: 500px;
+      padding: 0.6em;
+      margin: 0.5em 0;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background: #1c1c1c;
+      color: #eee;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul li {
+      background: #222;
+      margin: 0.4em 0;
+      padding: 0.6em;
+      border: 1px solid #333;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    ul li:hover {
+      background: #2c2c2c;
+    }
+
+    button {
+      background: #00ffe0;
+      color: #111;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00c2aa;
+    }
+
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 0.5em 0;
+      }
+      .skills-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>My Portfolio</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section id="about">
+    <h2>About Me</h2>
+    <p>I’m a passionate web developer with experience in HTML, CSS, JavaScript, and responsive web applications. I love building interactive tools that solve real problems.</p>
+  </section>
+
+  <section id="skills">
+    <h2>Skills</h2>
+    <div class="skills-container">
+      <div class="skill-box">HTML5</div>
+      <div class="skill-box">CSS3</div>
+      <div class="skill-box">JavaScript</div>
+      <div class="skill-box">Responsive Design</div>
+      <div class="skill-box">DOM Manipulation</div>
+      <div class="skill-box">Local Storage</div>
+      <div class="skill-box">Git & GitHub</div>
+    </div>
+    <a class="resume-btn" href="c:\Users\Lenovo\Downloads\Bhavya's resume.pdf"  target="_blank" download>Download Resume</a>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+
+    <h3>To-Do List App</h3>
+    <input type="text" id="taskInput" placeholder="Enter a task" />
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+
+    <h3>Product Filter & Sort</h3>
+    <label>
+      Category:
+      <select id="categoryFilter">
+        <option value="all">All</option>
+        <option value="tech">Tech</option>
+        <option value="home">Home</option>
+      </select>
+    </label>
+    <label>
+      Sort by Price:
+      <select id="sortFilter">
+        <option value="asc">Low to High</option>
+        <option value="desc">High to Low</option>
+      </select>
+    </label>
+    <ul id="productList"></ul>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <form id="contactForm">
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <script>
+    // To-Do App
+    const taskInput = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+
+    function loadTasks() {
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      taskList.innerHTML = "";
+      tasks.forEach((task, i) => {
+        const li = document.createElement("li");
+        li.textContent = task;
+        li.onclick = () => {
+          tasks.splice(i, 1);
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          loadTasks();
+        };
+        taskList.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const task = taskInput.value.trim();
+      if (!task) return;
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      tasks.push(task);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      taskInput.value = "";
+      loadTasks();
+    }
+
+    loadTasks();
+
+    // Product Filter
+    const products = [
+      { name: "Laptop", category: "tech", price: 900 },
+      { name: "Phone", category: "tech", price: 500 },
+      { name: "Vacuum", category: "home", price: 150 },
+      { name: "Air Purifier", category: "home", price: 200 },
+    ];
+
+    const categoryFilter = document.getElementById("categoryFilter");
+    const sortFilter = document.getElementById("sortFilter");
+    const productList = document.getElementById("productList");
+
+    function renderProducts() {
+      let filtered = [...products];
+      const cat = categoryFilter.value;
+      if (cat !== "all") {
+        filtered = filtered.filter(p => p.category === cat);
+      }
+      const sort = sortFilter.value;
+      filtered.sort((a, b) => sort === "asc" ? a.price - b.price : b.price - a.price);
+      productList.innerHTML = filtered.map(p => `<li>${p.name} - $${p.price}</li>`).join("");
+    }
+
+    categoryFilter.onchange = renderProducts;
+    sortFilter.onchange = renderProducts;
+    renderProducts();
+
+    // Contact Form (Fake Submit)
+    document.getElementById("contactForm").onsubmit = function(e) {
+      e.preventDefault();
+      alert("Message sent! (demo only)");
+      this.reset();
+    };
+  </script>
+
+</body>
+</html>
